@@ -1,13 +1,43 @@
+// import { Module } from '@nestjs/common';
+// import { AuthService } from './auth.service';
+// import { LocalStrategy } from './local.strategy';
+// import { UsersModule } from '../users/users.module';
+// import { PassportModule } from '@nestjs/passport';
+// import { JwtModule } from '@nestjs/jwt';
+// import { jwtConstants } from './constants';
+
+// @Module({
+//   imports: [
+//     UsersModule,
+//     PassportModule,
+//     JwtModule.register({
+//       secret: jwtConstants.secret,
+//       signOptions: { expiresIn: '60s' },
+//     }),
+//   ],
+//   providers: [AuthService, LocalStrategy],
+//   exports: [AuthService],
+// })
+// export class AuthModule {}
 import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { AuthController } from './auth.controller';
 import { LocalStrategy } from './local.strategy';
-import { UsersModule } from 'src/users/users.module';
+import { JwtStrategy } from './jwt.strategy';
+import { UsersModule } from '../users/users.module';
 import { PassportModule } from '@nestjs/passport';
+import { JwtModule } from '@nestjs/jwt';
+import { jwtConstants } from './constants';
 
 @Module({
-  imports:[UsersModule, PassportModule],//userService is accessibbe inside authfolders file  only if userModule exports it like  exports:[UsersService]
-  providers: [AuthService,LocalStrategy],
-  controllers: [AuthController]
+  imports: [
+    UsersModule,
+    PassportModule,
+    JwtModule.register({
+      secret: jwtConstants.secret,
+      signOptions: { expiresIn: '10d' },
+    }),
+  ],
+  providers: [AuthService, LocalStrategy, JwtStrategy],
+  exports: [AuthService],
 })
 export class AuthModule {}

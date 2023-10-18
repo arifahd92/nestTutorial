@@ -1,28 +1,27 @@
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
-import { UsersService } from 'src/users/users.service';
+import { Injectable } from '@nestjs/common';
+import { UsersService } from '../users/users.service';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
-    constructor(private userService:UsersService){// it should be exported from usermodule also like exports:[UserService], and injectable
+  constructor(
+    private usersService: UsersService,
+    private jwtService: JwtService
+  ) {}
 
+  async validateUser(username: string, pass: string): Promise<any> {
+    const user = await this.usersService.findOne(username);
+    if (user && user.password === pass) {
+      const { password, ...result } = user;
+      return result;
     }
-  async  validateUserCreds(email:string,password:string):Promise< {}> {
-     console.log(email)
-        const user =await this.userService.getUserByEmail(email)
-        console.log("authservice validateUserCreds==>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-        // if(!user){
-        //     throw new BadRequestException("it seems you are not registerd user")
-         
-        // }
-       
+    return null;
+  }
 
-        //     console.log(`user inside auth service ${user['email']} ${user['password']}`)
-        
-        // console.log(user)
-        if(password != user["password"]){
-           // console.log(user["pasword"])
-           throw new UnauthorizedException("password did not match")
-        }
-      return user//next time  token will be sent 
-    }
+  async login(user: any) {
+    const payload = { username: user.username, sub: user.userId };
+    return {
+      access_token: this.jwtService.sign(payload),
+    };
+  }
 }

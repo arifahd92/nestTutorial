@@ -9,9 +9,9 @@ async function bootstrap() {
    
     await sequelize.sync()
     const app = await NestFactory.create(AppModule);
-   // app.useGlobalPipes(new ValidationPipe)//go in student controller post there i commented @UsePipes(ValidationPipe) due to this 
+   // app.useGlobalPipes(new ValidationPipe)//go in student controller M->post there i commented @UsePipes(ValidationPipe) due to this 
                                            // this is handling only validation 
-    await app.listen(4000,()=>console.log("listening at port 4000"));
+    await app.listen(3000,()=>console.log("listening at port 3000"));
   } catch (error) {
     console.log("caught error")
     console.log(error)
